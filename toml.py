@@ -246,7 +246,8 @@ def loads(s, _dict=dict):
                 if group == "":
                     raise TomlDecodeError("Can't have a keygroup with an empty name")
                 try:
-                    currentlevel[group]
+                    if group not in currentlevel:
+                        raise KeyError
                     if i == len(groups) - 1:
                         if group in implicitgroups:
                             implicitgroups.remove(group)
@@ -352,7 +353,8 @@ def _load_line(line, currentlevel, multikey, multibackslash):
     else:
         value, vtype = _load_value(pair[1])
     try:
-        currentlevel[pair[0]]
+        if pair[0] not in currentlevel:
+            raise KeyError
         raise TomlDecodeError("Duplicate keys!")
     except KeyError:
         if multikey:
